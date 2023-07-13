@@ -17,19 +17,18 @@ app.use((req, res, next) => {
 
 // Create a new recipe
 app.post("/recipes", async (req, res) => {
-    try {
-      const newRecipe = await recipe.create(req.body);
-  
-      res.status(201).json(newRecipe);
-    } catch (err) {
-        if (err.name === "SequelizeValidationError") {
-        return res.status(422).json({ errors: err.errors.map((e) => e.message) });
+  const recipeData = req.body;
+  try {
+    const newRecipe = await recipe.create(recipeData);
+    res.status(201).json(newRecipe);
+  } catch (err) {
+    if (err.name === 'SequelizeValidationError') {
+      return res.status(422).json({ errors: err.errors.map(e => e.message) });
     }
     console.error(err);
-    res.status(500).send({ message: err.message });
-}
-  });
-
+    res.status(500).json({ message: 'An unexpected error occurred.' });
+  }
+});
 
 app.get("/", (req, res) => {
     res.send("Welcome to recipe API!");

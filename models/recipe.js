@@ -17,10 +17,32 @@ module.exports = (sequelize, DataTypes) => {
     title: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        min: 3
+      }
+  
     },
-    description: DataTypes.STRING,
-    ingredients: DataTypes.STRING,
-    instructions: DataTypes.STRING,
+    description: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        max: 500,
+      }
+    },
+    ingredients: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        max: 1000,
+      }
+    },
+    instructions: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        max: 5000,
+      }
+    },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE
   }, {
