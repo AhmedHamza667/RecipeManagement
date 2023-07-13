@@ -48,14 +48,14 @@ app.get("/recipes", async (req, res) => {
   });
 
   // Get a specific recipe
-app.get("/recipes/:id", async (req, res) => {
+  app.get("/recipes/:id", async (req, res) => {
     const recipeId = parseInt(req.params.id, 10);
   
     try {
-      const recipe = await recipe.findOne({ where: { id: recipeId } });
+      const recipeCall = await recipe.findOne({ where: { id: recipeId } });
   
-      if (recipe) {
-        res.status(200).json(recipe);
+      if (recipeCall) {
+        res.status(200).json(recipeCall);
       } else {
         res.status(404).send({ message: "Recipe not found" });
       }
@@ -64,13 +64,17 @@ app.get("/recipes/:id", async (req, res) => {
       res.status(500).send({ message: err.message });
     }
   });
+  
 
   // Update a specific recipe
-app.patch("/recipes/:id", async (req, res) => {
+  app.patch("/recipes/:id", async (req, res) => {
     const recipeId = parseInt(req.params.id, 10);
   
     try {
-      const [numberOfAffectedRows, affectedRows] = await recipe.update(req.body, { where: { id: recipeId }, returning: true });
+      const [numberOfAffectedRows, affectedRows] = await recipe.update(
+        req.body,
+        { where: { id: recipeId }, returning: true }
+      );
   
       if (numberOfAffectedRows > 0) {
         res.status(200).json(affectedRows[0]);
@@ -78,11 +82,13 @@ app.patch("/recipes/:id", async (req, res) => {
         res.status(404).send({ message: "Recipe not found" });
       }
     } catch (err) {
-      res.status(500).send({ message: err.message });
+      if (err.name === "SequelizeValidationError") {
+        return res.status(422).json({ errors: err.errors.map((e) => e.message) });
+      }
       console.error(err);
+      res.status(500).send({ message: err.message });
     }
   });
-
 
 // Delete a specific job
 app.delete("/recipes/:id", async (req, res) => {
