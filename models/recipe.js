@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        min: 3
+        len: [3, 50],
       }
   
     },
@@ -26,14 +26,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        max: 500,
+        len: [0, 500]
       }
     },
     ingredients: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        max: 1000,
+        len: [0, 1000]
       }
     },
     instructions: {
